@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>KD IA 1.3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f172a;
+            font-family: system-ui, sans-serif;
+            color: white;
+            padding: 12px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: #0f172a;
+            padding: 16px;
+            text-align: center;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #c084fc;
+        }
+
+        .header p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* Modos */
+        .modos {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            justify-content: center;
+            background: #1e293b;
+        }
+
+        .modo-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modo-rapido {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .modo-racionio {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .ativo {
+            box-shadow: 0 0 0 2px #c084fc;
+        }
+
+        /* Botoes acoes */
+        .acoes {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: #1e293b;
+            justify-content: center;
+        }
+
+        .acao-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .nova-conv {
+            background: #22c55e;
+            color: white;
+        }
+
+        .del-conv {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* Lista de conversas */
+        .conversas-lista {
+            background: #1e293b;
+            padding: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .conv-item {
+            background: #0f172a;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .conv-item.active {
+            background: #3b82f6;
+        }
+
+        .conv-delete {
+            background: #dc2626;
+            border: none;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        /* Chat */
+        .chat {
+            background: #1e293b;
+            height: 55vh;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+
+        .user {
+            background: #2563eb;
+            align-self: flex-end;
+        }
+
+        .ia {
+            background: #334155;
+            align-self: flex-start;
+            border-left: 3px solid #c084fc;
+        }
+
+        .pensando {
+            background: #334155;
+            align-self: flex-start;
+            padding: 8px 14px;
+            border-radius: 18px;
+        }
+
+        /* Input */
+        .input-area {
+            padding: 12px;
+            background: #0f172a;
+            display: flex;
+            gap: 10px;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            border: none;
+            background: #1e293b;
+            color: white;
+            font-size: 14px;
+        }
+
+        .input-area button {
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: none;
+            background: #22c55e;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 10px;
+            padding: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>KD IA 1.3</h1>
+        <p>Criada por Medrin | Historia | HTML | Matematica | RPs</p>
+    </div>
+
+    <div class="modos">
+        <button id="btnRapido" class="modo-btn modo-rapido ativo">Rapido</button>
+        <button id="btnRaciocinio" class="modo-btn modo-racionio">Raciocinio</button>
+    </div>
+
+    <div class="acoes">
+        <button id="btnNova" class="acao-btn nova-conv">+ Nova Conversa</button>
+        <button id="btnDeletarAtual" class="acao-btn del-conv">🗑 Deletar atual</button>
+    </div>
+
+    <div id="listaConversas" class="conversas-lista"></div>
+
+    <div id="chat" class="chat"></div>
+
+    <div class="input-area">
+        <input type="text" id="inputMsg" placeholder="Digite sua mensagem...">
+        <button id="btnEnviar">Enviar</button>
+    </div>
+
+    <footer>Matematica (+, -, x, /, %) | HTML | Historia EUA/Brasil/Roma/Guerras | Municipios RJ | Estados</footer>
+</div>
+
+<script>
+    // ==========================================
+    // KD IA 1.3 - TODOS BOTOES FUNCIONAM
+    // ==========================================
+    
+    // Variaveis
+    let conversas = {};
+    let conversaAtualId = null;
+    let modoRapido = true;
+    let esperando = false;
+    
+    const VERSAO = "1.3";
+    const CRIADOR = "Medrin";
+    const DATA = "09/05/2025";
+    
+    // ========== CONHECIMENTO ==========
+    function getResposta(msg) {
+        let m = msg.toLowerCase().trim();
+        
+        // Saudacoes
+        if (m.includes("bom dia")) return "Bom dia! Tenha um excelente dia!";
+        if (m.includes("boa tarde")) return "Boa tarde! Como posso ajudar?";
+        if (m.includes("boa noite")) return "Boa noite! Tenha um descanso tranquilo!";
+        if (m.includes("boa madrugada")) return "Boa madrugada! Durma bem!";
+        
+        // Matematica
+        let nums = m.match(/\d+/g);
+        if (nums) {
+            if (m.includes("+") || m.includes("soma")) {
+                if (nums.length >= 2) return `${nums[0]} + ${nums[1]} = ${Number(nums[0]) + Number(nums[1])}`;
+            }
+            if (m.includes("-") || m.includes("menos")) {
+                if (nums.length >= 2) return `${nums[0]} - ${nums[1]} = ${Number(nums[0]) - Number(nums[1])}`;
+            }
+            if (m.includes("*") || m.includes("x") || m.includes("vezes")) {
+                if (nums.length >= 2) return `${nums[0]} x ${nums[1]} = ${Number(nums[0]) * Number(nums[1])}`;
+            }
+            if (m.includes("/") || m.includes("divisao")) {
+                if (nums.length >= 2) return `${nums[0]} / ${nums[1]} = ${Number(nums[0]) / Number(nums[1])}`;
+            }
+            if (m.includes("%")) {
+                if (nums.length >= 2) return `${nums[1]}% de ${nums[0]} = ${(Number(nums[0]) * Number(nums[1])) / 100}`;
+            }
+        }
+        
+        // HTML
+        if (m.includes("criar") && (m.includes("site") || m.includes("botao") || m.includes("html"))) {
+            if (m.includes("botao")) return "✅ CODIGO BOTAO:\n\n<button style='background:blue; color:white; padding:10px; border:none; border-radius:5px;'>Clique aqui</button>";
+            if (m.includes("formulario")) return "✅ CODIGO FORM:\n\n<form><input placeholder='Nome'><br><input placeholder='Email'><br><button>Enviar</button></form>";
+            return "✅ HTML BASICO:\n\n<!DOCTYPE html>\n<html>\n<head><title>Site</title></head>\n<body>\n<h1>Bem vindo</h1>\n</body>\n</html>";
+        }
+        
+        // Historia
+        if (m.includes("estados unidos") || m.includes("eua")) return "🇺🇸 EUA: Independencia 1776, Guerra Civil 1861-1865, 1ª e 2ª Guerras, Homem na Lua 1969.";
+        if (m.includes("historia do brasil")) return "🇧🇷 BRASIL: Descoberto 1500, Independencia 1822, Republica 1889, Ditadura 1964-1985.";
+        if (m.includes("roma")) return "🏛️ ROMA: Fundada 753 a.C., Imperio 27 a.C., Queda 476 d.C.";
+        if (m.includes("2 guerra") || m.includes("segunda guerra")) return "💣 2ª GUERRA: 1939-1945, Alemanha vs Aliados, 70 milhoes de mortos.";
+        if (m.includes("1 guerra") || m.includes("primeira guerra")) return "⚔️ 1ª GUERRA: 1914-1918, Trincheiras, 20 milhoes de mortos.";
+        
+        // Municipios RJ
+        if (m.includes("nova iguaçu")) return "NOVA IGUACU: Cidade das Laranjas, maior populacao da Baixada Fluminense.";
+        if (m.includes("itaboraí")) return "ITABORAI: Abriga o COMPERJ e o Aeroporto.";
+        if (m.includes("belford roxo")) return "BELFORD ROXO: Municipio da Baixada Fluminense.";
+        if (m.includes("niterói")) return "NITEROI: Antiga capital do RJ, famosa pelo MAC (Niemeyer).";
+        if (m.includes("duque de caxias")) return "DUQUE DE CAXIAS: Polo industrial, abriga a REDUC.";
+        if (m.includes("nilópolis")) return "NILOPOLIS: Territorio mais antigo da Baixada.";
+        if (m.includes("queimados")) return "QUEIMADOS: Municipio da Baixada, comercio forte.";
+        if (m.includes("são gonçalo")) return "SAO GONCALO: Um dos mais populosos do RJ.";
+        
+        // Estados
+        if (m.includes("rio de janeiro") && !m.includes("municipio")) return "RIO DE JANEIRO: Estado do Sudeste, capital Rio (Cristo Redentor).";
+        if (m.includes("são paulo")) return "SAO PAULO: Estado mais rico e populoso do Brasil.";
+        if (m.includes("santa catarina")) return "SANTA CATARINA: Estado do Sul, capital Florianopolis (praias).";
+        
+        // Versao
+        if (m.includes("versao")) return `Versao ${VERSAO} da KD IA, criada por ${CRIADOR} em ${DATA}.`;
+        
+        // Criador
+        if (m.includes("criador") || m.includes("medrin")) return `Meu criador e o ${CRIADOR}!`;
+        
+        // RP
+        if (m.includes("rp")) return "🎭 Vamos fazer um RP! Me diga o cenario (medieval, futuro, escola) e seu personagem!";
+        
+        // Ajuda
+        if (m.includes("ajuda")) return "Sei: Matematica, HTML, Historia, Municipios RJ, Estados, RPs!";
+        
+        // Ensinar
+        if (m.startsWith("ensinar que")) return "Use: ensinar que [palavra] e [resposta]";
+        
+        // Resposta generica
+        if (modoRapido) {
+            let r = ["Interessante!", "Entendo...", "Fale mais!", "Que legal!"];
+            return r[Math.floor(Math.random() * r.length)];
+        } else {
+            let p = ["Pensando... 🤔", "Analisando... 🤔", "Refletindo... 🤔"];
+            return p[Math.floor(Math.random() * p.length)] + " Interessante!";
+        }
+    }
+    
+    // ========== GERENCIAR CONVERSAS ==========
+    function salvarTudo() {
+        localStorage.setItem("kd_conversas", JSON.stringify(conversas));
+        localStorage.setItem("kd_atual", conversaAtualId);
+    }
+    
+    function carregarConversas() {
+        let saved = localStorage.getItem("kd_conversas");
+        if (saved) {
+            conversas = JSON.parse(saved);
+        } else {
+            let id = Date.now().toString();
+            conversas[id] = {
+                id: id,
+                titulo: "Conversa 1",
+                data: new Date().toLocaleString(),
+                msgs: [{ texto: "Ola! Sou KD IA 1.3. Pergunte qualquer coisa!", tipo: "ia" }]
+            };
+        }
+        conversaAtualId = localStorage.getItem("kd_atual");
+        if (!conversaAtualId || !conversas[conversaAtualId]) {
+            conversaAtualId = Object.keys(conversas)[0];
+        }
+    }
+    
+    function renderizarLista() {
+        let listaDiv = document.getElementById("listaConversas");
+        listaDiv.innerHTML = "";
+        for (let id in conversas) {
+            let conv = conversas[id];
+            let div = document.createElement("div");
+            div.className = "conv-item";
+            if (id === conversaAtualId) div.classList.add("active");
+            div.innerHTML = `<span>${conv.titulo}</span><button class="conv-delete" data-id="${id}">X</button>`;
+            div.querySelector("span").onclick = () => mudarConversa(id);
+            div.querySelector(".conv-delete").onclick = (e) => {
+                e.stopPropagation();
+                deletarConversa(id);
+            };
+            listaDiv.appendChild(div);
+        }
+    }
+    
+    function mudarConversa(id) {
+        if (conversas[id]) {
+            conversaAtualId = id;
+            salvarTudo();
+            renderizarLista();
+            renderizarChat();
+        }
+    }
+    
+    function deletarConversa(id) {
+        delete conversas[id];
+        let ids = Object.keys(conversas);
+        if (ids.length === 0) {
+            let novoId = Date.now().toString();
+            conversas[novoId] = {
+                id: novoId,
+                titulo: "Conversa 1",
+                data: new Date().toLocaleString(),
+                msgs: [{ texto: "Ola! Sou KD IA 1.3. Pergunte qualquer coisa!", tipo: "ia" }]
+            };
+            conversaAtualId = novoId;
+        } else {
+            conversaAtualId = ids[0];
+        }
+        salvarTudo();
+        renderizarLista();
+        renderizarChat();
+    }
+    
+    function novaConversa() {
+        let id = Date.now().toString();
+        let num = Object.keys(conversas).length + 1;
+        conversas[id] = {
+            id: id,
+            titulo: "Conversa " + num,
+            data: new Date().toLocaleString(),
+            msgs: [{ texto: "Ola! Nova conversa iniciada. Pergunte qualquer coisa!", tipo: "ia" }]
+        };
+        conversaAtualId = id;
+        salvarTudo();
+        renderizarLista();
+        renderizarChat();
+    }
+    
+    function deletarConversaAtual() {
+        if (conversaAtualId) {
+            deletarConversa(conversaAtualId);
+        }
+    }
+    
+    function renderizarChat() {
+        let chatDiv = document.getElementById("chat");
+        if (!conversas[conversaAtualId]) return;
+        chatDiv.innerHTML = "";
+        conversas[conversaAtualId].msgs.forEach(msg => {
+            let div = document.createElement("div");
+            div.className = "msg " + msg.tipo;
+            div.innerText = msg.texto;
+            chatDiv.appendChild(div);
+        });
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+    
+    function adicionarMsg(texto, tipo) {
+        if (!conversas[conversaAtualId]) return;
+        conversas[conversaAtualId].msgs.push({ texto: texto, tipo: tipo });
+        
+        if (tipo === "user" && conversas[conversaAtualId].titulo === "Conversa " + Object.keys(conversas).length) {
+            let titulo = texto.length > 20 ? texto.substring(0, 20) + "..." : texto;
+            conversas[conversaAtualId].titulo = titulo;
+        }
+        
+        salvarTudo();
+        renderizarChat();
+        renderizarLista();
+    }
+    
+    // Enviar mensagem
+    function enviarMensagem() {
+        if (esperando) return;
+        let input = document.getElementById("inputMsg");
+        let texto = input.value.trim();
+        if (!texto) return;
+        
+        esperando = true;
+        adicionarMsg(texto, "user");
+        input.value = "";
+        
+        let chatDiv = document.getElementById("chat");
+        let pensandoDiv = document.createElement("div");
+        pensandoDiv.className = "pensando";
+        pensandoDiv.innerText = modoRapido ? "..." : "🤔 pensando...";
+        chatDiv.appendChild(pensandoDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        
+        let delay = modoRapido ? 300 : 700;
+        
+        setTimeout(() => {
+            let resposta = getResposta(texto);
+            pensandoDiv.remove();
+            adicionarMsg(resposta, "ia");
+            esperando = false;
+            input.focus();
+        }, delay);
+    }
+    
+    // Modos
+    function setRapido() {
+        modoRapido = true;
+        document.getElementById("btnRapido").classList.add("ativo");
+        document.getElementById("btnRaciocinio").classList.remove("ativo");
+    }
+    
+    function setRaciocinio() {
+        modoRapido = false;
+        document.getElementById("btnRaciocinio").classList.add("ativo");
+        document.getElementById("btnRapido").classList.remove("ativo");
+    }
+    
+    // Inicializar
+    carregarConversas();
+    renderizarLista();
+    renderizarChat();
+    
+    // Conectar botoes
+    document.getElementById("btnEnviar").onclick = enviarMensagem;
+    document.getElementById("btnRapido").onclick = setRapido;
+    document.getElementById("btnRaciocinio").onclick = setRaciocinio;
+    document.getElementById("btnNova").onclick = novaConversa;
+    document.getElementById("btnDeletarAtual").onclick = deletarConversaAtual;
+    document.getElementById("inputMsg").onkeypress = function(e) {
+        if (e.key === "Enter") enviarMensagem();
+    };
+</script>
+</body>
+</html>
